@@ -8,5 +8,9 @@
     <string name="root_dir">Here is root directory.</string>
     <string name="launch_camera">Launch Camera</string>
     <string name="add_new_dir">Add new directory</string>
+    <string name="enter_name">Enter name.</string>
+    <string name="confirm_del">Are you sure to delete ?</string>
+    <string name="confirm">Confirmation</string>
+    <string name="not_selected">Not selected.</string>
 
 </resources>
