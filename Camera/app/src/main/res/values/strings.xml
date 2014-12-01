@@ -12,5 +12,6 @@
     <string name="confirm_del">Are you sure to delete ?</string>
     <string name="confirm">Confirmation</string>
     <string name="not_selected">Not selected.</string>
+    <string name="title_activity_camera">CameraActivity</string>
 
 </resources>

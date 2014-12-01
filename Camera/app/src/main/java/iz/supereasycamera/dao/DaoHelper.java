@@ -3,9 +3,10 @@ package iz.supereasycamera.dao;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 
 /**
- * Created by tono on 2014/11/29.
+ * Created by izumi_j on 2014/11/29.
  */
 public final class DaoHelper extends SQLiteOpenHelper {
 
@@ -27,6 +28,18 @@ public final class DaoHelper extends SQLiteOpenHelper {
 
     public static SQLiteDatabase getReadableDB(Context context) {
         return getInstance(context).getReadableDatabase();
+    }
+
+    public static void beginTransaction(Context context) {
+        getInstance(context).getWritableDatabase().beginTransaction();
+    }
+
+    public static void commitTransaction(Context context) {
+        getInstance(context).getWritableDatabase().setTransactionSuccessful();
+    }
+
+    public static SQLiteStatement compileStatement(Context context, String sql) {
+        return getInstance(context).getWritableDatabase().compileStatement(sql);
     }
 
     private DaoHelper(Context context) {

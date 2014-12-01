@@ -1,6 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin" android:paddingTop="@dimen/activity_vertical_margin" android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
-    android:background="@android:color/white">
+    android:background="@android:color/background_light">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -17,7 +17,7 @@
             android:id="@+id/btnPrev"
             android:contentDescription="@string/previous"
             android:src="@drawable/ic_prev"
-            android:padding="4dp"/>
+            android:background="@drawable/selector_button" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,25 +37,31 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
-        android:id="@+id/linearLayoutBottom">
+        android:id="@+id/linearLayoutBottom"
+        android:layout_marginTop="8dp">
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnCamera"
-            android:src="@drawable/ic_camera"/>
+            android:src="@drawable/ic_camera"
+            android:background="@drawable/selector_button" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnAdd"
-            android:src="@drawable/ic_add"/>
+            android:src="@drawable/ic_add"
+            android:background="@drawable/selector_button"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp" />
 
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnDel"
-            android:src="@drawable/ic_del"/>
+            android:src="@drawable/ic_del"
+            android:background="@drawable/selector_button" />
 
     </LinearLayout>
 

@@ -2,20 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="horizontal">
+              android:descendantFocusability="blocksDescendants"
+              android:orientation="horizontal"
+    android:background="@drawable/selector_item">
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/cbSel"
-        android:layout_gravity="center_vertical"/>
+        android:layout_gravity="center_vertical" />
 
     <ImageView
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:id="@+id/imgIndex"
         android:src="@drawable/ic_dir"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+        android:layout_marginLeft="@dimen/activity_horizontal_margin" />
 
     <LinearLayout
         android:orientation="vertical"
