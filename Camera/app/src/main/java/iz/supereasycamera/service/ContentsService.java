@@ -5,6 +5,8 @@ import android.content.Context;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import iz.supereasycamera.Utils;
@@ -44,6 +46,41 @@ public final class ContentsService {
         Utils.debug(list.size() + " dirs found in " + dirId);
 
         return list;
+    }
+
+    /**
+     * 親を辿って「hoge/fuga/hige」といったディレクトリ構造を表す文字列を返す。
+     *
+     * @param context
+     * @param dto
+     * @return text
+     */
+    public String getFullyDirText(Context context, MainDto dto) {
+        if (dto == null) {
+            return "-----";
+        }
+        if (dto.parentId == 0) {
+            return "/";
+        }
+
+        List<String> nameList = new ArrayList<String>();
+        MainDto parent = getDir(context, dto.parentId);
+        while (parent != null) {
+            nameList.add(parent.name);
+            parent = getDir(context, parent.parentId);
+        }
+
+        StringBuilder result = new StringBuilder();
+        Collections.sort(nameList, new Comparator<String>() {
+            @Override
+            public int compare(String lhs, String rhs) {
+                return lhs.compareTo(rhs) * -1;
+            }
+        });
+        for (String name : nameList) {
+            result.append("/").append(name);
+        }
+        return result.toString();
     }
 
     /**

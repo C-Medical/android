@@ -65,6 +65,12 @@ public class MainActivity extends Activity {
     private void load() {
         listAdapter.clear();
         listAdapter.addAll(contentsService.getContentsOf(getApplicationContext(), getCurrentDirId()));
+
+        final TextView txtDir = (TextView) findViewById(R.id.txtDir);
+        txtDir.setText(currentDir != null ? "/" + currentDir.name : getResources().getText(R.string.root_dir));
+
+        final TextView txtDirTree = (TextView) findViewById(R.id.txtDirTree);
+        txtDirTree.setText(contentsService.getFullyDirText(getApplicationContext(), currentDir));
     }
 
     @Override
@@ -103,8 +109,6 @@ public class MainActivity extends Activity {
     private class PrevButtonClickListener implements  View.OnClickListener {
         @Override
         public void onClick(View v) {
-            final TextView txt = (TextView) MainActivity.this.findViewById(R.id.txtDir);
-
             if (MainActivity.this.currentDir == null) {
                 return;
             }
@@ -112,13 +116,11 @@ public class MainActivity extends Activity {
             if (MainActivity.this.currentDir.parentId == 0) {
                 MainActivity.this.currentDir = null;
                 MainActivity.this.load();
-                txt.setText(getResources().getText(R.string.root_dir));
                 return;
             }
 
             MainActivity.this.currentDir = MainActivity.this.contentsService.getDir(getApplicationContext(), MainActivity.this.currentDir.parentId);
             MainActivity.this.load();
-            txt.setText(getResources().getText(R.string.root_dir));
         }
     }
 
@@ -191,8 +193,6 @@ public class MainActivity extends Activity {
             final MainDto dto = (MainDto)((ListView) parent).getItemAtPosition(position);
             switch (dto.dirOrPic) {
                 case DIR:
-                    final TextView txt = (TextView) MainActivity.this.findViewById(R.id.txtDir);
-                    txt.setText(dto.name);
                     MainActivity.this.currentDir = dto;
                     MainActivity.this.load();
                     break;
@@ -215,7 +215,7 @@ public class MainActivity extends Activity {
             values.put(MediaStore.Images.Media.TITLE, fileName);
             values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
             MainActivity.this.tempImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
+            
             Intent intent = new Intent();
             intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, MainActivity.this.tempImageUri);
