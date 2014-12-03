@@ -48,6 +48,7 @@ public final class DaoHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DirDao.CREATE);
+        db.execSQL(PicDao.CREATE);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

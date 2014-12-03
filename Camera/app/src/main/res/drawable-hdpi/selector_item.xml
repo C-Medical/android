@@ -3,7 +3,7 @@
     <item
         android:state_selected="false"
         android:state_pressed="false"
-        android:drawable="@color/background" />
+        android:drawable="@color/white" />
     <item
         android:state_pressed="true"
         android:drawable="@color/active" />

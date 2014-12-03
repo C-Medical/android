@@ -19,6 +19,7 @@ public final class MainDto {
     public String name;
     public long parentId;
     public byte[] content;
+    public int size;
 
     @Override
     public boolean equals(Object o) {
@@ -29,9 +30,9 @@ public final class MainDto {
 
         if (id != mainDto.id) return false;
         if (parentId != mainDto.parentId) return false;
+        if (size != mainDto.size) return false;
         if (!Arrays.equals(content, mainDto.content)) return false;
-        if (createdAt != null ? !createdAt.equals(mainDto.createdAt) : mainDto.createdAt != null)
-            return false;
+        if (createdAt != null ? !createdAt.equals(mainDto.createdAt) : mainDto.createdAt != null) return false;
         if (dirOrPic != mainDto.dirOrPic) return false;
         if (name != null ? !name.equals(mainDto.name) : mainDto.name != null) return false;
 
@@ -46,6 +47,7 @@ public final class MainDto {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (int) (parentId ^ (parentId >>> 32));
         result = 31 * result + (content != null ? Arrays.hashCode(content) : 0);
+        result = 31 * result + size;
         return result;
     }
 
@@ -58,6 +60,7 @@ public final class MainDto {
                 ", name='" + name + '\'' +
                 ", parentId=" + parentId +
                 ", content=" + Arrays.toString(content) +
+                ", size=" + size +
                 '}';
     }
 

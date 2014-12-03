@@ -13,5 +13,11 @@
     <string name="confirm">Confirmation</string>
     <string name="not_selected">Not selected.</string>
     <string name="title_activity_camera">CameraActivity</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="title_activity_picture">PictureActivity</string>
+    <string name="some_error">Some error occurred.</string>
 
 </resources>

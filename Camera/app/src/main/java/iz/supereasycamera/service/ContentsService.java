@@ -5,11 +5,11 @@ import android.content.Context;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import iz.supereasycamera.Utils;
+import iz.supereasycamera.R;
+import iz.supereasycamera.dao.PicDao;
+import iz.supereasycamera.utils.Misc;
 import iz.supereasycamera.dao.DirDao;
 import iz.supereasycamera.dto.MainDto;
 
@@ -18,6 +18,7 @@ import iz.supereasycamera.dto.MainDto;
  */
 public final class ContentsService {
     private final DirDao dirDao = new DirDao();
+    private final PicDao picDao = new PicDao();
 
     /**
      * ディレクトリを返す。
@@ -28,22 +29,23 @@ public final class ContentsService {
      */
     public MainDto getDir(Context context, long id) {
         final MainDto dto = dirDao.selectBy(context, id);
-        Utils.debug(dto != null ? dto.toString() : "DirData not found by id = " + id);
+        Misc.debug(dto != null ? dto.toString() : "DirData not found by id = " + id);
         return dto;
     }
 
     /**
-     * 指定ディレクトリID直下のコンテンツを返す。
+     * 指定ディレクトリID直下のデータ一覧を返す。
      *
      * @param context
      * @param dirId
      * @return list of dto
      */
-    public List<MainDto> getContentsOf(Context context, long dirId) {
+    public List<MainDto> getDataListOf(Context context, long dirId) {
         List<MainDto> list = new ArrayList<MainDto>();
 
         list.addAll(dirDao.selectChildrenOf(context, dirId));
-        Utils.debug(list.size() + " dirs found in " + dirId);
+        list.addAll(picDao.selectChildrenOf(context, dirId));
+        Misc.debug(list.size() + " dirs and pics found in " + dirId);
 
         return list;
     }
@@ -56,11 +58,13 @@ public final class ContentsService {
      * @return text
      */
     public String getFullyDirText(Context context, MainDto dto) {
+        final String root = String.valueOf(context.getResources().getText(R.string.root_dir));
+
         if (dto == null) {
-            return "-----";
+            return "";
         }
         if (dto.parentId == 0) {
-            return "/";
+            return root;
         }
 
         List<String> nameList = new ArrayList<String>();
@@ -70,15 +74,9 @@ public final class ContentsService {
             parent = getDir(context, parent.parentId);
         }
 
-        StringBuilder result = new StringBuilder();
-        Collections.sort(nameList, new Comparator<String>() {
-            @Override
-            public int compare(String lhs, String rhs) {
-                return lhs.compareTo(rhs) * -1;
-            }
-        });
-        for (String name : nameList) {
-            result.append("/").append(name);
+        StringBuilder result = new StringBuilder(root);
+        for (int i = nameList.size() - 1; i >= 0; i--) {
+            result.append("/").append(nameList.get(i));
         }
         return result.toString();
     }
@@ -98,7 +96,7 @@ public final class ContentsService {
         result.name = name;
         result.parentId = parentId;
         result.id = dirDao.insert(context, result);
-        Utils.debug("New id for DirData is " + result.id);
+        Misc.debug("New id for DirData is " + result.id);
         return result;
     }
 
@@ -114,6 +112,7 @@ public final class ContentsService {
                 removeDir(context, dto.id);
                 break;
             case PIC:
+                picDao.delete(context, dto.id);
                 break;
             default: throw  new IllegalArgumentException("Unknown DirOrPic!");
         }
@@ -131,8 +130,59 @@ public final class ContentsService {
         }
 
         // 子ファイル削除
+        picDao.deleteChildrenOf(context, id);
 
         // 自分を削除
         dirDao.delete(context, id);
+    }
+
+    /**
+     * 新しい写真を追加。
+     *
+     * @param context
+     * @param parentId
+     * @param content
+     * @return dto
+     */
+    public MainDto addNewPic(Context context, long parentId, byte[] content) {
+        final MainDto result = new MainDto();
+        result.dirOrPic = MainDto.DirOrPic.PIC;
+        result.createdAt = DateTime.now();
+        result.name = Misc.formatDateTime(result.createdAt);
+        result.parentId = parentId;
+        result.content = content;
+        result.size = content.length;
+        result.id = picDao.insert(context, result);
+        Misc.debug("New id for PicData is " + result.id);
+        result.content = null;// DTOに写真データは保持しないよ
+        return result;
+    }
+
+    /**
+     * 写真データを取得。
+     *
+     * @param context
+     * @param id
+     * @return bytes
+     */
+    public byte[] getPicture(Context context, long id) {
+        return picDao.selectContentBy(context, id);
+    }
+
+    /**
+     *
+     * @param context
+     * @param dto
+     */
+    public void updateName(Context context, MainDto dto) {
+        switch (dto.dirOrPic) {
+            case DIR:
+                dirDao.updateName(context, dto.id, dto.name);
+                break;
+            case PIC:
+                picDao.updateName(context, dto.id, dto.name);
+                break;
+            default: throw new IllegalArgumentException("Unknown DirOrPic!");
+        }
     }
 }

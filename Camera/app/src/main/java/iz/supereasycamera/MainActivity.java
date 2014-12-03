@@ -8,9 +8,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,10 +25,12 @@ import java.util.List;
 
 import iz.supereasycamera.dto.MainDto;
 import iz.supereasycamera.service.ContentsService;
+import iz.supereasycamera.utils.PictureUtils;
 
 
 public class MainActivity extends Activity {
     private static final int REQUEST_CODE_CAMERA = 2;
+    private static final int REQUEST_CODE_REF_PIC = 3;
 
     private final ContentsService contentsService = new ContentsService();
     private MainDto currentDir = null;
@@ -36,6 +41,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
         // Buttonクリックイベントを設定
@@ -51,6 +57,7 @@ public class MainActivity extends Activity {
         // ListViewのイベントや中身を管理するクラスを設定
         listView = (ListView) findViewById(R.id.listView);
         listView.setOnItemClickListener(new ItemClickListener());
+        listView.setOnItemLongClickListener(new ItemLongClickListener());
         listAdapter = new MainListAdapter(this, 0);
         listView.setAdapter(listAdapter);
 
@@ -64,7 +71,7 @@ public class MainActivity extends Activity {
 
     private void load() {
         listAdapter.clear();
-        listAdapter.addAll(contentsService.getContentsOf(getApplicationContext(), getCurrentDirId()));
+        listAdapter.addAll(contentsService.getDataListOf(getApplicationContext(), getCurrentDirId()));
 
         final TextView txtDir = (TextView) findViewById(R.id.txtDir);
         txtDir.setText(currentDir != null ? "/" + currentDir.name : getResources().getText(R.string.root_dir));
@@ -93,12 +100,41 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putLong("currentDirId", getCurrentDirId());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        final long currentDirId = savedInstanceState.getLong("currentDirId", 0);
+        if (currentDirId > 0) {
+            currentDir = contentsService.getDir(getApplicationContext(), currentDirId);
+        }
+        load();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_CAMERA:
                 if (resultCode != RESULT_OK) {
                     return;
                 }
+                // 取った写真をbyte配列で取得
+                byte[] picture = PictureUtils.readOutFrom(getApplicationContext(), tempImageUri);
+                getContentResolver().delete(tempImageUri, null, null);
+                if (picture.length == 0 && data.getData() != null) {
+                    // Xperia対応らしい！
+                    picture = PictureUtils.readOutFrom(getApplicationContext(), data.getData());
+                    getContentResolver().delete(data.getData(), null, null);
+                }
+                // DB保存して、一覧に反映
+                final MainDto dto = contentsService.addNewPic(getApplicationContext(), getCurrentDirId(), picture);
+                listAdapter.add(dto);
                 break;
         }
     }
@@ -130,13 +166,15 @@ public class MainActivity extends Activity {
     private class AddButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            final EditText editView = new EditText(MainActivity.this);
-            new AlertDialog.Builder(MainActivity.this)
+            final EditText editText = new EditText(MainActivity.this);
+            editText.setInputType(InputType.TYPE_CLASS_TEXT);
+
+            final AlertDialog dlg = new AlertDialog.Builder(MainActivity.this)
                     .setTitle(v.getResources().getString(R.string.enter_name))
-                    .setView(editView)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    .setView(editText)
+                    .setPositiveButton(v.getResources().getText(R.string.ok), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            final String entry = editView.getText().toString().trim();
+                            final String entry = editText.getText().toString().trim();
                             if (entry.length() == 0) {
                                 return;
                             }
@@ -145,11 +183,22 @@ public class MainActivity extends Activity {
                             MainActivity.this.listAdapter.add(dto);
                         }
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(v.getResources().getText(R.string.cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                         }
                     })
-                    .show();
+                    .create();
+
+            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        dlg.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    }
+                }
+            });
+
+            dlg.show();
         }
     }
 
@@ -168,7 +217,7 @@ public class MainActivity extends Activity {
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle(v.getResources().getString(R.string.confirm))
                     .setMessage(v.getResources().getString(R.string.confirm_del))
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(v.getResources().getText(R.string.yes), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             for (MainDto dto : dtos) {
                                 MainActivity.this.contentsService.remove(getApplicationContext(), dto);
@@ -176,7 +225,7 @@ public class MainActivity extends Activity {
                             }
                         }
                     })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(v.getResources().getText(R.string.no), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                         }
                     })
@@ -197,9 +246,60 @@ public class MainActivity extends Activity {
                     MainActivity.this.load();
                     break;
                 case PIC:
+                    Intent intent = new Intent(getApplicationContext(), PictureActivity.class);
+                    intent.putExtra("id", dto.id);
+                    startActivityForResult(intent, REQUEST_CODE_REF_PIC);
                     break;
                 default: throw new IllegalArgumentException("Unknown DirOrPic!");
             }
+        }
+    }
+
+    /**
+     * 項目長押しイベント
+     */
+    private class ItemLongClickListener implements AdapterView.OnItemLongClickListener {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            final MainDto dto = MainActivity.this.listAdapter.getItem(position);
+
+            final EditText editText = new EditText(MainActivity.this);
+            editText.setInputType(InputType.TYPE_CLASS_TEXT);
+            editText.setText(dto.name);
+            editText.selectAll();
+
+            final AlertDialog dlg = new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(view.getResources().getString(R.string.enter_name))
+                    .setView(editText)
+                    .setPositiveButton(view.getResources().getText(R.string.ok), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            final String entry = editText.getText().toString().trim();
+                            if (entry.length() == 0) {
+                                return;
+                            }
+
+                            dto.name = entry;
+                            MainActivity.this.contentsService.updateName(getApplicationContext(), dto);
+                            MainActivity.this.listAdapter.notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton(view.getResources().getText(R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    })
+                    .create();
+
+            editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        dlg.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    }
+                }
+            });
+
+            dlg.show();
+            return false;
         }
     }
 
