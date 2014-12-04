@@ -27,6 +27,10 @@
             android:name="iz.supereasycamera.StorageUsageActivity"
             android:label="@string/title_activity_storage_usage" >
         </activity>
+        <activity
+            android:name="iz.supereasycamera.DirSelectActivity"
+            android:label="@string/title_activity_dir_select" >
+        </activity>
     </application>
 
 </manifest>

@@ -23,4 +23,7 @@
     <string name="total_byte">バイト数合計</string>
     <string name="yes">はい</string>
     <string name="zero">0</string>
+    <string name="title_activity_dir_select">フォルダ選択</string>
+    <string name="move_here"><u>ここに移動する</u></string>
+    <string name="data_moved">データを移動しました。</string>
 </resources>

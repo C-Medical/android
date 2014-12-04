@@ -36,6 +36,7 @@ public final class DaoHelper extends SQLiteOpenHelper {
 
     public static void commitTransaction(Context context) {
         getInstance(context).getWritableDatabase().setTransactionSuccessful();
+        getInstance(context).getWritableDatabase().endTransaction();
     }
 
     public static SQLiteStatement compileStatement(Context context, String sql) {

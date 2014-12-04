@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import iz.supereasycamera.dto.MainDto;
@@ -31,6 +32,7 @@ import iz.supereasycamera.utils.PictureUtils;
 public class MainActivity extends Activity {
     private static final int REQUEST_CODE_CAMERA = 2;
     private static final int REQUEST_CODE_REF_PIC = 3;
+    private static final int REQUEST_CODE_MOVE_DIR = 4;
 
     private final ContentsService contentsService = new ContentsService();
     private MainDto currentDir = null;
@@ -53,6 +55,8 @@ public class MainActivity extends Activity {
         btnDel.setOnClickListener(new DelButtonClickListener());
         ImageButton btnCamera = (ImageButton) findViewById(R.id.btnCamera);
         btnCamera.setOnClickListener(new CameraButtonClickListener());
+        ImageButton btnMoveDir = (ImageButton) findViewById(R.id.btnMoveDir);
+        btnMoveDir.setOnClickListener(new MoveDirButtonClickListener());
 
         // ListViewのイベントや中身を管理するクラスを設定
         listView = (ListView) findViewById(R.id.listView);
@@ -136,6 +140,13 @@ public class MainActivity extends Activity {
                 // DB保存して、一覧に反映
                 final MainDto dto = contentsService.addNewPic(getApplicationContext(), getCurrentDirId(), picture);
                 listAdapter.add(dto);
+                break;
+
+            case REQUEST_CODE_MOVE_DIR:
+                if (resultCode != RESULT_OK) {
+                    return;
+                }
+                load();
                 break;
         }
     }
@@ -301,6 +312,24 @@ public class MainActivity extends Activity {
 
             dlg.show();
             return false;
+        }
+    }
+
+    /**
+     * フォルダ移動ボタンイベント
+     */
+    private class MoveDirButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            final ArrayList<MainDto> dtos = MainActivity.this.listAdapter.getSelectedDtos();
+            if (dtos.isEmpty()) {
+                Toast.makeText(getApplicationContext(), getResources().getText(R.string.not_selected), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            final Intent intent = new Intent(getApplicationContext(), DirSelectActivity.class);
+            intent.putParcelableArrayListExtra("dtos", dtos);
+            startActivityForResult(intent, REQUEST_CODE_MOVE_DIR);
         }
     }
 

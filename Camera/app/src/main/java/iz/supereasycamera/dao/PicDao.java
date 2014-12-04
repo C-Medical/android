@@ -141,6 +141,17 @@ public final class PicDao {
 
     /**
      * @param context
+     * @param id
+     * @param parentId
+     */
+    public void updateParentId(Context context, long id, long parentId) {
+        final ContentValues values = new ContentValues();
+        values.put("parentId", parentId);
+        DaoHelper.getWritableDB(context).update("PicData", values, "id = ?", new String[]{String.valueOf(id)});
+    }
+
+    /**
+     * @param context
      * @return number
      */
     public int selectCount(Context context) {

@@ -24,5 +24,8 @@
     <string name="num_dir">Number of folders</string>
     <string name="num_pic">Number of pictures</string>
     <string name="total_byte">Total bytes</string>
+    <string name="title_activity_dir_select">DirSelectActivity</string>
+    <string name="move_here"><u>Move to here</u></string>
+    <string name="data_moved">Data has been moved.</string>
 
 </resources>

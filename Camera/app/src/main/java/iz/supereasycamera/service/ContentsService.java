@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import iz.supereasycamera.R;
+import iz.supereasycamera.dao.DaoHelper;
 import iz.supereasycamera.dao.PicDao;
 import iz.supereasycamera.dto.StorageUsage;
 import iz.supereasycamera.utils.Misc;
@@ -47,6 +48,22 @@ public final class ContentsService {
         list.addAll(dirDao.selectChildrenOf(context, dirId));
         list.addAll(picDao.selectChildrenOf(context, dirId));
         Misc.debug(list.size() + " dirs and pics found in " + dirId);
+
+        return list;
+    }
+
+    /**
+     * 指定ディレクトリID直下のディレクトリ一覧を返す。
+     *
+     * @param context
+     * @param dirId
+     * @return list of dto
+     */
+    public List<MainDto> getDirListOf(Context context, long dirId) {
+        List<MainDto> list = new ArrayList<MainDto>();
+
+        list.addAll(dirDao.selectChildrenOf(context, dirId));
+        Misc.debug(list.size() + " dirs found in " + dirId);
 
         return list;
     }
@@ -197,5 +214,30 @@ public final class ContentsService {
         final int numPics = picDao.selectCount(context);
         final int ttlSize = picDao.selectTotalSize(context);
         return new StorageUsage(numDirs, numPics, ttlSize);
+    }
+
+    /**
+     *
+     * @param dtos
+     * @param parentId
+     */
+    public void changeParent(Context context, List<MainDto> dtos, long parentId) {
+        DaoHelper.beginTransaction(context);
+        for (MainDto dto : dtos) {
+            switch (dto.dirOrPic) {
+                case DIR:
+                    if (dto.id == parentId) {
+                        Misc.warn("Cannot move directory into itself. id = " + dto.id);
+                        continue;
+                    }
+                    dirDao.updateParentId(context, dto.id, parentId);
+                    break;
+                case PIC:
+                    picDao.updateParentId(context, dto.id, parentId);
+                    break;
+                default: throw new IllegalArgumentException("Unknown DirOrPic!");
+            }
+        }
+        DaoHelper.commitTransaction(context);
     }
 }

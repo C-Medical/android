@@ -18,7 +18,6 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import iz.supereasycamera.dto.MainDto;
@@ -53,8 +52,8 @@ public final class MainListAdapter extends ArrayAdapter<MainDto> {
      *
      * @return selected dtos
      */
-    public List<MainDto> getSelectedDtos() {
-        final List<MainDto> list = new ArrayList<MainDto>();
+    public ArrayList<MainDto> getSelectedDtos() {
+        final ArrayList<MainDto> list = new ArrayList<MainDto>();
         for (Integer pos : checkedIndexes) {
             list.add(getItem(pos));
         }

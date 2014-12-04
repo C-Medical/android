@@ -31,10 +31,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:text="Large Text"
+            android:text="Medium Text"
             android:id="@+id/txtName"
             android:textColor="@color/black"
             android:textStyle="bold"
+            android:singleLine="true"
             android:scrollHorizontally="true"
             android:ellipsize="end"/>
 
