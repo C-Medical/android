@@ -23,6 +23,10 @@
             android:name="iz.supereasycamera.PictureActivity"
             android:label="@string/title_activity_picture" >
         </activity>
+        <activity
+            android:name="iz.supereasycamera.StorageUsageActivity"
+            android:label="@string/title_activity_storage_usage" >
+        </activity>
     </application>
 
 </manifest>

@@ -9,6 +9,7 @@ import java.util.List;
 
 import iz.supereasycamera.R;
 import iz.supereasycamera.dao.PicDao;
+import iz.supereasycamera.dto.StorageUsage;
 import iz.supereasycamera.utils.Misc;
 import iz.supereasycamera.dao.DirDao;
 import iz.supereasycamera.dto.MainDto;
@@ -184,5 +185,17 @@ public final class ContentsService {
                 break;
             default: throw new IllegalArgumentException("Unknown DirOrPic!");
         }
+    }
+
+    /**
+     *
+     * @param context
+     * @return usage
+     */
+    public StorageUsage getStorageUsage(Context context) {
+        final int numDirs = dirDao.selectCount(context);
+        final int numPics = picDao.selectCount(context);
+        final int ttlSize = picDao.selectTotalSize(context);
+        return new StorageUsage(numDirs, numPics, ttlSize);
     }
 }

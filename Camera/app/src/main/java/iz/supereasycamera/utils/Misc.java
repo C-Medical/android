@@ -35,7 +35,12 @@ public final class Misc {
     }
 
     public static String toKB(int byteSize) {
-        final BigDecimal kb = new BigDecimal(byteSize).divide(new BigDecimal(1000), 2, BigDecimal.ROUND_HALF_UP);
+        final BigDecimal kb = new BigDecimal(byteSize).divide(new BigDecimal(1000), 3, BigDecimal.ROUND_HALF_UP);
+        return kb.toString() + "KB";
+    }
+
+    public static String toMB(int byteSize) {
+        final BigDecimal kb = new BigDecimal(byteSize).divide(new BigDecimal(1000 * 1000), 3, BigDecimal.ROUND_HALF_UP);
         return kb.toString() + "KB";
     }
 }

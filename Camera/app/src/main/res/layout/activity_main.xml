@@ -68,18 +68,21 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btnPrev">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Small Text"
-                android:id="@+id/txtDirTree"/>
+                android:id="@+id/txtDirTree"
+                android:scrollHorizontally="true"
+                android:ellipsize="start" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="@string/root_dir"
@@ -87,7 +90,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"/>
+                android:layout_alignParentStart="true"
+                android:scrollHorizontally="true"
+                android:ellipsize="marquee"/>
 
         </LinearLayout>
     </RelativeLayout>

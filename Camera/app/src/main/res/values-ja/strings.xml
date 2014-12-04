@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">超簡単カメラ</string>
+    <string name="action_settings">設定</string>
+    <string name="add_new_dir">新しいフォルダ</string>
+    <string name="cancel">キャンセル</string>
+    <string name="confirm">確認</string>
+    <string name="confirm_del">削除してよろしいですか？</string>
+    <string name="enter_name">名前を入力して下さい。</string>
+    <string name="hello_world">こんにちは、世界！</string>
+    <string name="launch_camera">カメラ起動</string>
+    <string name="no">いいえ</string>
+    <string name="not_selected">選択されていません。</string>
+    <string name="num_dir">フォルダ数</string>
+    <string name="num_pic">写真数</string>
+    <string name="ok">OK</string>
+    <string name="previous">前へ</string>
+    <string name="root_dir">ROOT</string>
+    <string name="some_error">エラーが発生しました。</string>
+    <string name="storage_usage">ストレージ使用状況</string>
+    <string name="title_activity_picture">写真</string>
+    <string name="title_activity_storage_usage">ストレージ使用状況</string>
+    <string name="total_byte">バイト数合計</string>
+    <string name="yes">はい</string>
+    <string name="zero">0</string>
+</resources>

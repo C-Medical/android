@@ -26,6 +26,7 @@ public final class DirDao {
 
     private static final String SEL_BY_PK = "SELECT * FROM DirData WHERE id = ?";
     private static final String SEL_CHILDREN = "SELECT * FROM DirData WHERE parentId = ? ORDER BY name, id";
+    private static final String SEL_COUNT = "SELECT COUNT(*) FROM DirData";
 
     /**
      * INSERT
@@ -103,5 +104,18 @@ public final class DirDao {
         final ContentValues values = new ContentValues();
         values.put("name", name);
         DaoHelper.getWritableDB(context).update("DirData", values, "id = ?", new String[]{String.valueOf(id)});
+    }
+
+    /**
+     * @param context
+     * @return number
+     */
+    public int selectCount(Context context) {
+        Cursor c = DaoHelper.getReadableDB(context).rawQuery(SEL_COUNT, new String[]{});
+        if (c.moveToFirst()) {
+            return c.getInt(0);
+        } else {
+            return 0;
+        }
     }
 }

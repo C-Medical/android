@@ -12,12 +12,17 @@
     <string name="confirm_del">Are you sure to delete ?</string>
     <string name="confirm">Confirmation</string>
     <string name="not_selected">Not selected.</string>
-    <string name="title_activity_camera">CameraActivity</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="title_activity_picture">PictureActivity</string>
     <string name="some_error">Some error occurred.</string>
+    <string name="storage_usage">Storage usage</string>
+    <string name="title_activity_storage_usage">StorageUsageActivity</string>
+    <string name="zero">0</string>
+    <string name="num_dir">Number of folders</string>
+    <string name="num_pic">Number of pictures</string>
+    <string name="total_byte">Total bytes</string>
 
 </resources>

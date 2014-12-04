@@ -92,8 +92,9 @@ public class MainActivity extends Activity {
         // オプションメニューが選択されたときの処理
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_usage) {
+            final Intent intent = new Intent(getApplicationContext(), StorageUsageActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

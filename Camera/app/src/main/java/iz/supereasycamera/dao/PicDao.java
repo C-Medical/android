@@ -28,6 +28,8 @@ public final class PicDao {
 
     private static final String SEL_BY_PK = "SELECT * FROM PicData WHERE id = ?";
     private static final String SEL_CHILDREN = "SELECT * FROM PicData WHERE parentId = ? ORDER BY name, id";
+    private static final String SEL_COUNT = "SELECT COUNT(*) FROM PicData";
+    private static final String SEL_TTL_SIZE = "SELECT SUM(size) FROM PicData";
 
     /**
      * INSERT
@@ -137,4 +139,29 @@ public final class PicDao {
         DaoHelper.getWritableDB(context).update("PicData", values, "id = ?", new String[]{String.valueOf(id)});
     }
 
+    /**
+     * @param context
+     * @return number
+     */
+    public int selectCount(Context context) {
+        Cursor c = DaoHelper.getReadableDB(context).rawQuery(SEL_COUNT, new String[]{});
+        if (c.moveToFirst()) {
+            return c.getInt(0);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * @param context
+     * @return number
+     */
+    public int selectTotalSize(Context context) {
+        Cursor c = DaoHelper.getReadableDB(context).rawQuery(SEL_TTL_SIZE, new String[]{});
+        if (c.moveToFirst()) {
+            return c.getInt(0);
+        } else {
+            return 0;
+        }
+    }
 }
