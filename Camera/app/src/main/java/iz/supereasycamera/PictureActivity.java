@@ -1,16 +1,26 @@
 package iz.supereasycamera;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 import iz.supereasycamera.service.ContentsService;
 import iz.supereasycamera.utils.Misc;
@@ -18,8 +28,11 @@ import iz.supereasycamera.utils.PictureUtils;
 
 
 public class PictureActivity extends Activity {
+    private static final int REQ_CODE_SHARE = 2;
 
     private long picId;
+
+    private Uri tempImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +46,8 @@ public class PictureActivity extends Activity {
         } else {
             Toast.makeText(getApplicationContext(), getResources().getText(R.string.some_error), Toast.LENGTH_LONG).show();
         }
+
+        ((ImageButton)findViewById(R.id.btnShare)).setOnClickListener(new ShareButtonClickListener());
     }
 
     @Override
@@ -40,6 +55,13 @@ public class PictureActivity extends Activity {
         final ImageView imgPic = (ImageView) findViewById(R.id.imgPic);
         final FrameLayout layout = (FrameLayout) findViewById(R.id.layoutPicMain);
         new BitmapWorkerTask(imgPic, picId, layout.getWidth(), layout.getHeight()).execute();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (tempImageUri != null) {
+            getContentResolver().delete(tempImageUri, null, null);
+        }
     }
 
     @Override
@@ -57,6 +79,49 @@ public class PictureActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * シェアボタンイベント
+     */
+    private class ShareButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            tempImageUri = null;
+
+            // 画像を仮保存
+            final ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            tempImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            OutputStream os = null;
+            try {
+                os = getContentResolver().openOutputStream(tempImageUri);
+                final ImageView imageView = (ImageView) findViewById(R.id.imgPic);
+                Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            } catch (IOException e){
+                Misc.error("Failed to save temporary image.");
+                return;
+            } finally {
+                if (os != null) {
+                    try {
+                        os.close();
+                    } catch (IOException e){}
+                }
+            }
+
+            // Share
+            final Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/jpeg");
+            intent.putExtra(Intent.EXTRA_STREAM, tempImageUri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            try {
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.share_picture)), REQ_CODE_SHARE);
+            } catch (ActivityNotFoundException ex){
+
+            }
+        }
     }
 
     /**
@@ -103,6 +168,7 @@ public class PictureActivity extends Activity {
             }
 
             Misc.debug("Set Bitmap of " + id);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setImageBitmap(bitmap);
         }
     }

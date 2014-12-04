@@ -27,5 +27,6 @@
     <string name="title_activity_dir_select">DirSelectActivity</string>
     <string name="move_here"><u>Move to here</u></string>
     <string name="data_moved">Data has been moved.</string>
+    <string name="share_picture">Share picture</string>
 
 </resources>

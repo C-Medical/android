@@ -18,11 +18,12 @@
         android:layout_above="@+id/layoutPicBottom">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:id="@+id/imgPic"
             android:layout_gravity="center"
-            android:src="@drawable/ic_pic"/>
+            android:src="@drawable/ic_pic"
+            android:scaleType="center"/>
     </FrameLayout>
 
     <LinearLayout

@@ -26,4 +26,5 @@
     <string name="title_activity_dir_select">フォルダ選択</string>
     <string name="move_here"><u>ここに移動する</u></string>
     <string name="data_moved">データを移動しました。</string>
+    <string name="share_picture">写真を共有</string>
 </resources>
