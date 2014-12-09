@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import iz.supereasycamera.dto.MainDto;
 import iz.supereasycamera.service.ContentsService;
 import iz.supereasycamera.utils.Misc;
 import iz.supereasycamera.utils.PictureUtils;
@@ -30,7 +31,7 @@ import iz.supereasycamera.utils.PictureUtils;
 public class PictureActivity extends Activity {
     private static final int REQ_CODE_SHARE = 2;
 
-    private long picId;
+    private MainDto pic;
 
     private Uri tempImageUri;
 
@@ -42,7 +43,7 @@ public class PictureActivity extends Activity {
 
         Intent intent = getIntent();
         if(intent != null) {
-            picId = intent.getLongExtra("id", 0);
+            pic = intent.getParcelableExtra("pic");
         } else {
             Toast.makeText(getApplicationContext(), getResources().getText(R.string.some_error), Toast.LENGTH_LONG).show();
         }
@@ -54,7 +55,7 @@ public class PictureActivity extends Activity {
     public void onWindowFocusChanged(boolean hasFocus) {
         final ImageView imgPic = (ImageView) findViewById(R.id.imgPic);
         final FrameLayout layout = (FrameLayout) findViewById(R.id.layoutPicMain);
-        new BitmapWorkerTask(imgPic, picId, layout.getWidth(), layout.getHeight()).execute();
+        new BitmapWorkerTask(imgPic, pic, layout.getWidth(), layout.getHeight()).execute();
     }
 
     @Override
@@ -130,31 +131,31 @@ public class PictureActivity extends Activity {
     private class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
         private final ContentsService contentsService = new ContentsService();
         private final ImageView imageView;
-        private final long id;
+        private final MainDto pic;
         private final long width;
         private final long height;
 
-        private BitmapWorkerTask(ImageView imageView, long id, long width, long height) {
+        private BitmapWorkerTask(ImageView imageView, MainDto pic, long width, long height) {
             this.imageView = imageView;
-            this.id = id;
+            this.pic = pic;
             this.width = width;
             this.height = height;
         }
 
         @Override
         protected Bitmap doInBackground(String... params) {
-            Misc.debug("Start to create Bitmap of " + id);
-            final byte[] picture = contentsService.getPicture(getApplicationContext(), id);
-            final Bitmap ret = PictureUtils.toBitmap(picture, width, height);
+            Misc.debug("Start to create Bitmap of " + pic.id);
+            final byte[] picture = contentsService.getPicture(getApplicationContext(), pic.id);
+            final Bitmap ret = PictureUtils.toBitmap(picture, width, height, pic.orientation);
             if (ret == null) {
-                Misc.warn("Picture is null! id = " + id);
+                Misc.warn("Picture is null! id = " + pic.id);
             }
             return ret;
         }
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            Misc.debug("Finish task for " + id);
+            Misc.debug("Finish task for " + pic.id);
 
             if (isCancelled()) {
                 Misc.debug("Task has been canceled.");
@@ -163,11 +164,11 @@ public class PictureActivity extends Activity {
             }
 
             if (bitmap == null) {
-                Misc.debug("bitmap is null for " + id);
+                Misc.debug("bitmap is null for " + pic.id);
                 return;
             }
 
-            Misc.debug("Set Bitmap of " + id);
+            Misc.debug("Set Bitmap of " + pic.id);
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setImageBitmap(bitmap);
         }

@@ -21,8 +21,9 @@ public final class PicDao {
             .append(" createdAt INTEGER,")
             .append(" name TEXT,")
             .append(" parentId INTEGER NOT NULL DEFAULT 0,")
-            .append(" content BLOB,")
-            .append(" size INTEGER NOT NULL DEFAULT 0")
+            .append(" size INTEGER NOT NULL DEFAULT 0,")
+            .append(" orientation INTEGER NOT NULL DEFAULT 0,")
+            .append(" content BLOB")
             .append(")")
             .toString();
 
@@ -43,8 +44,9 @@ public final class PicDao {
         values.put("createdAt", dto.createdAt.getMillis());
         values.put("name", dto.name);
         values.put("parentId", dto.parentId);
-        values.put("content", dto.content);
         values.put("size", dto.content.length);
+        values.put("orientation", dto.orientation);
+        values.put("content", dto.content);
         return DaoHelper.getWritableDB(context).insert("PicData", null, values);
     }
 
@@ -94,7 +96,7 @@ public final class PicDao {
     public byte[] selectContentBy(Context context, long id) {
         Cursor c = DaoHelper.getReadableDB(context).rawQuery(SEL_BY_PK, new String[]{String.valueOf(id)});
         if (c.moveToFirst()) {
-            return c.getBlob(4);
+            return c.getBlob(6);
         } else {
             return null;
         }
@@ -123,8 +125,9 @@ public final class PicDao {
         dto.createdAt = new DateTime(c.getLong(1));
         dto.name = c.getString(2);
         dto.parentId = c.getLong(3);
+        dto.size = c.getInt(4);
+        dto.orientation = c.getInt(5);
         dto.content = null;
-        dto.size = c.getInt(5);
         return dto;
     }
 

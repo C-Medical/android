@@ -16,13 +16,17 @@ public final class MainDto implements Parcelable {
         DIR, PIC;
     }
 
+    // 共通
     public DirOrPic dirOrPic;
     public long id;
     public DateTime createdAt;
     public String name;
     public long parentId;
-    public byte[] content;
+
+    // 写真用
     public int size;
+    public int orientation;
+    public byte[] content;
 
     public MainDto(){}
 
@@ -39,40 +43,36 @@ public final class MainDto implements Parcelable {
         dest.writeString(name);
         dest.writeLong(parentId);
         dest.writeInt(size);
+        dest.writeInt(orientation);
     }
 
-    private MainDto(Parcel in) {
-        dirOrPic = DirOrPic.valueOf(in.readString());
-        id = in.readLong();
-        createdAt = new DateTime(in.readLong());
-        name = in.readString();
-        parentId = in.readLong();
-        size = in.readInt();
+    @Override
+    public String toString() {
+        return "MainDto{" +
+                "dirOrPic=" + dirOrPic +
+                ", id=" + id +
+                ", createdAt=" + createdAt +
+                ", name='" + name + '\'' +
+                ", parentId=" + parentId +
+                ", size=" + size +
+                ", orientation=" + orientation +
+                ", content=" + Arrays.toString(content) +
+                '}';
     }
-
-    public static final Parcelable.Creator<MainDto> CREATOR = new Parcelable.Creator<MainDto>() {
-        public MainDto createFromParcel(Parcel in) {
-            return new MainDto(in);
-        }
-
-        public MainDto[] newArray(int size) {
-            return new MainDto[size];
-        }
-    };
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || ((Object) this).getClass() != o.getClass()) return false;
+        if (o == null || ((Object)this).getClass() != o.getClass()) return false;
 
         MainDto mainDto = (MainDto) o;
 
         if (id != mainDto.id) return false;
+        if (orientation != mainDto.orientation) return false;
         if (parentId != mainDto.parentId) return false;
         if (size != mainDto.size) return false;
         if (!Arrays.equals(content, mainDto.content)) return false;
-        if (createdAt != null ? !createdAt.equals(mainDto.createdAt) : mainDto.createdAt != null)
-            return false;
+        if (createdAt != null ? !createdAt.equals(mainDto.createdAt) : mainDto.createdAt != null) return false;
         if (dirOrPic != mainDto.dirOrPic) return false;
         if (name != null ? !name.equals(mainDto.name) : mainDto.name != null) return false;
 
@@ -86,22 +86,31 @@ public final class MainDto implements Parcelable {
         result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (int) (parentId ^ (parentId >>> 32));
-        result = 31 * result + (content != null ? Arrays.hashCode(content) : 0);
         result = 31 * result + size;
+        result = 31 * result + orientation;
+        result = 31 * result + (content != null ? Arrays.hashCode(content) : 0);
         return result;
     }
 
-    @Override
-    public String toString() {
-        return "MainDto{" +
-                "dirOrPic=" + dirOrPic +
-                ", id=" + id +
-                ", createdAt=" + createdAt +
-                ", name='" + name + '\'' +
-                ", parentId=" + parentId +
-                ", content=" + Arrays.toString(content) +
-                ", size=" + size +
-                '}';
+    private MainDto(Parcel in) {
+        dirOrPic = DirOrPic.valueOf(in.readString());
+        id = in.readLong();
+        createdAt = new DateTime(in.readLong());
+        name = in.readString();
+        parentId = in.readLong();
+        size = in.readInt();
+        orientation = in.readInt();
+
     }
+
+    public static final Parcelable.Creator<MainDto> CREATOR = new Parcelable.Creator<MainDto>() {
+        public MainDto createFromParcel(Parcel in) {
+            return new MainDto(in);
+        }
+
+        public MainDto[] newArray(int size) {
+            return new MainDto[size];
+        }
+    };
 
 }

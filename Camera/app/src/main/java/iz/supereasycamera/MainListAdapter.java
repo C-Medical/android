@@ -93,7 +93,7 @@ public final class MainListAdapter extends ArrayAdapter<MainDto> {
         if (dto.dirOrPic == MainDto.DirOrPic.DIR) {
             viewHolder.imgIndex.setImageDrawable(convertView.getResources().getDrawable(R.drawable.ic_dir));
         } else {
-            loadPicture(getContext(), dto.id, viewHolder.imgIndex);
+            loadPicture(getContext(), dto, viewHolder.imgIndex);
         }
 
         viewHolder.txtName.setText(dto.name);
@@ -124,16 +124,16 @@ public final class MainListAdapter extends ArrayAdapter<MainDto> {
      * 写真の読み込みを実行。
      *
      * @param context
-     * @param id
+     * @param pic
      * @param imageView
      */
-    private void loadPicture(Context context, long id, ImageView imageView) {
+    private void loadPicture(Context context, MainDto pic, ImageView imageView) {
         // 同じタスクが走っていないか、同じ ImageView で古いタスクが走っていないかチェック
-        if (!canCreateNewTask(id, imageView)) {
+        if (!canCreateNewTask(pic.id, imageView)) {
             return;
         }
 
-        final BitmapWorkerTask task = new BitmapWorkerTask(imageView, id);
+        final BitmapWorkerTask task = new BitmapWorkerTask(imageView, pic);
         final AsyncDrawable asyncDrawable = new AsyncDrawable(context.getResources(), task);
         imageView.setImageDrawable(asyncDrawable);
         task.execute();
@@ -150,7 +150,7 @@ public final class MainListAdapter extends ArrayAdapter<MainDto> {
         final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTaskOf(imageView);
 
         if (bitmapWorkerTask != null) {
-            if (bitmapWorkerTask.id != id) {
+            if (bitmapWorkerTask.pic.id != id) {
                 // 以前のタスクをキャンセル
                 Misc.debug("Cancel task of " + id);
                 bitmapWorkerTask.cancel(true);
@@ -203,27 +203,27 @@ public final class MainListAdapter extends ArrayAdapter<MainDto> {
     private class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
         private final ContentsService contentsService = new ContentsService();
         private final WeakReference<ImageView> imageViewRef;
-        private final long id;
+        private final MainDto pic;
 
-        private BitmapWorkerTask(ImageView imageView, long id) {
+        private BitmapWorkerTask(ImageView imageView, MainDto pic) {
             this.imageViewRef = new WeakReference<ImageView>(imageView);
-            this.id = id;
+            this.pic = pic;
         }
 
         @Override
         protected Bitmap doInBackground(String... params) {
-            Misc.debug("Start to create Bitmap of " + id);
-            final byte[] picture = contentsService.getPicture(getContext(), id);
-            final Bitmap ret = PictureUtils.toIndexBitmap(picture);
+            Misc.debug("Start to create Bitmap of " + pic.id);
+            final byte[] picture = contentsService.getPicture(getContext(), pic.id);
+            final Bitmap ret = PictureUtils.toIndexBitmap(picture, pic.orientation);
             if (ret == null) {
-                Misc.warn("Picture is null! id = " + id);
+                Misc.warn("Picture is null! id = " + pic.id);
             }
             return ret;
         }
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            Misc.debug("Finish task for " + id);
+            Misc.debug("Finish task for " + pic.id);
 
             if (isCancelled()) {
                 Misc.debug("Task has been canceled.");
@@ -232,7 +232,7 @@ public final class MainListAdapter extends ArrayAdapter<MainDto> {
             }
 
             if (imageViewRef == null || bitmap == null) {
-                Misc.debug("Image is null for " + id);
+                Misc.debug("Image is null for " + pic.id);
                 return;
             }
 
@@ -241,7 +241,7 @@ public final class MainListAdapter extends ArrayAdapter<MainDto> {
                 final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTaskOf(imageView);
                 // ImageViewに結びつくタスクが自分自身だったらOK（同じ参照だったらOK）
                 if (this == bitmapWorkerTask) {
-                    Misc.debug("Set Bitmap of " + id);
+                    Misc.debug("Set Bitmap of " + pic.id);
                     imageView.setImageBitmap(bitmap);
                 }
             }

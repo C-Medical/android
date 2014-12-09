@@ -159,20 +159,23 @@ public final class ContentsService {
      *
      * @param context
      * @param parentId
+     * @param orientation
      * @param content
      * @return dto
      */
-    public MainDto addNewPic(Context context, long parentId, byte[] content) {
+    public MainDto addNewPic(Context context, long parentId, int orientation, byte[] content) {
         final MainDto result = new MainDto();
         result.dirOrPic = MainDto.DirOrPic.PIC;
         result.createdAt = DateTime.now();
         result.name = Misc.formatDateTime(result.createdAt);
         result.parentId = parentId;
-        result.content = content;
         result.size = content.length;
+        result.orientation = orientation;
+        result.content = content;
         result.id = picDao.insert(context, result);
-        Misc.debug("New id for PicData is " + result.id);
+
         result.content = null;// DTOに写真データは保持しないよ
+        Misc.debug("New PicData inserted. " + result.toString());
         return result;
     }
 

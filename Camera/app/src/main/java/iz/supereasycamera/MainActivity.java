@@ -26,6 +26,7 @@ import java.util.List;
 
 import iz.supereasycamera.dto.MainDto;
 import iz.supereasycamera.service.ContentsService;
+import iz.supereasycamera.utils.Misc;
 import iz.supereasycamera.utils.PictureUtils;
 
 
@@ -109,6 +110,7 @@ public class MainActivity extends Activity {
         super.onSaveInstanceState(outState);
 
         outState.putLong("currentDirId", getCurrentDirId());
+        outState.putParcelable("tempImageUri", tempImageUri);
     }
 
     @Override
@@ -120,6 +122,8 @@ public class MainActivity extends Activity {
             currentDir = contentsService.getDir(getApplicationContext(), currentDirId);
         }
         load();
+
+        tempImageUri = savedInstanceState.getParcelable("tempImageUri");
     }
 
     @Override
@@ -130,15 +134,23 @@ public class MainActivity extends Activity {
                     return;
                 }
                 // 取った写真をbyte配列で取得
-                byte[] picture = PictureUtils.readOutFrom(getApplicationContext(), tempImageUri);
-                getContentResolver().delete(tempImageUri, null, null);
-                if (picture.length == 0 && data.getData() != null) {
-                    // Xperia対応らしい！
+                Misc.debug("tempImageUri = " + tempImageUri + ", data = " + (data != null ? data.getData() : null));
+                int orientation = 0;
+                byte[] picture = null;
+                if (tempImageUri != null) {
+                    orientation = PictureUtils.getOrientation(getApplicationContext(), tempImageUri);
+                    picture = PictureUtils.readOutFrom(getApplicationContext(), tempImageUri);
+                    getContentResolver().delete(tempImageUri, null, null);
+                }
+
+                if ((picture == null || picture.length == 0) && (data.getData() != null)) {
+                    // Xperiaなど対応らしい！
+                    orientation = PictureUtils.getOrientation(getApplicationContext(), data.getData());
                     picture = PictureUtils.readOutFrom(getApplicationContext(), data.getData());
                     getContentResolver().delete(data.getData(), null, null);
                 }
                 // DB保存して、一覧に反映
-                final MainDto dto = contentsService.addNewPic(getApplicationContext(), getCurrentDirId(), picture);
+                final MainDto dto = contentsService.addNewPic(getApplicationContext(), getCurrentDirId(), orientation, picture);
                 listAdapter.add(dto);
                 break;
 
@@ -259,7 +271,7 @@ public class MainActivity extends Activity {
                     break;
                 case PIC:
                     Intent intent = new Intent(getApplicationContext(), PictureActivity.class);
-                    intent.putExtra("id", dto.id);
+                    intent.putExtra("pic", dto);
                     startActivityForResult(intent, REQUEST_CODE_REF_PIC);
                     break;
                 default: throw new IllegalArgumentException("Unknown DirOrPic!");
@@ -345,7 +357,8 @@ public class MainActivity extends Activity {
             values.put(MediaStore.Images.Media.TITLE, fileName);
             values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
             MainActivity.this.tempImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            
+            Misc.debug("tempImageUri = " + tempImageUri);
+
             Intent intent = new Intent();
             intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, MainActivity.this.tempImageUri);
