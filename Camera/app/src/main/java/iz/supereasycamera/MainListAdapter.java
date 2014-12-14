@@ -60,6 +60,16 @@ public final class MainListAdapter extends ArrayAdapter<MainDto> {
         return list;
     }
 
+    public ArrayList<MainDto> getPictures() {
+        final ArrayList<MainDto> list = new ArrayList<MainDto>();
+        for (int i = 0; i < this.getCount(); i ++) {
+            if (this.getItem(i).dirOrPic == MainDto.DirOrPic.PIC) {
+                list.add(this.getItem(i));
+            }
+        }
+        return list;
+    }
+
     private class ViewHolder {
         private final ImageView imgIndex;
         private final TextView txtName;

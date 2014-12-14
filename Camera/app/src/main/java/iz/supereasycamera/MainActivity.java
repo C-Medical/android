@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         // Buttonクリックイベントを設定
-        ImageButton btnPrev = (ImageButton) findViewById(R.id.btnPrev);
+        ImageButton btnPrev = (ImageButton) findViewById(R.id.btnLeft);
         btnPrev.setOnClickListener(new PrevButtonClickListener());
         ImageButton btnAdd = (ImageButton) findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(new AddButtonClickListener());
@@ -272,6 +272,7 @@ public class MainActivity extends Activity {
                 case PIC:
                     Intent intent = new Intent(getApplicationContext(), PictureActivity.class);
                     intent.putExtra("pic", dto);
+                    intent.putExtra("pics", MainActivity.this.listAdapter.getPictures());
                     startActivityForResult(intent, REQUEST_CODE_REF_PIC);
                     break;
                 default: throw new IllegalArgumentException("Unknown DirOrPic!");

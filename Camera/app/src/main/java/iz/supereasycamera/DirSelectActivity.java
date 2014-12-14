@@ -35,7 +35,7 @@ public class DirSelectActivity extends Activity {
         listAdapter = new MainListAdapter(this, 0);
         listView.setAdapter(listAdapter);
 
-        ((ImageButton) findViewById(R.id.btnPrev)).setOnClickListener(new PrevButtonClickListener());
+        ((ImageButton) findViewById(R.id.btnLeft)).setOnClickListener(new PrevButtonClickListener());
         ((Button) findViewById(R.id.btnOk)).setOnClickListener(new OkButtonClickListener());
 
         load();

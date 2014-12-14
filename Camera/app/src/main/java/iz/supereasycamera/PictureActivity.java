@@ -16,11 +16,15 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 import iz.supereasycamera.dto.MainDto;
 import iz.supereasycamera.service.ContentsService;
@@ -28,12 +32,13 @@ import iz.supereasycamera.utils.Misc;
 import iz.supereasycamera.utils.PictureUtils;
 
 
-public class PictureActivity extends Activity {
+public class PictureActivity extends Activity implements ViewSwitcher.ViewFactory {
     private static final int REQ_CODE_SHARE = 2;
 
     private MainDto pic;
-
+    private ArrayList<MainDto> pics;
     private Uri tempImageUri;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,18 +49,57 @@ public class PictureActivity extends Activity {
         Intent intent = getIntent();
         if(intent != null) {
             pic = intent.getParcelableExtra("pic");
+            pics = intent.getParcelableArrayListExtra("pics");
         } else {
             Toast.makeText(getApplicationContext(), getResources().getText(R.string.some_error), Toast.LENGTH_LONG).show();
         }
 
+        ((TextView)findViewById(R.id.txtPicName)).setText(pic.name);
+        ((ImageSwitcher)findViewById(R.id.imageSwitcher)).setFactory(this);
+
         ((ImageButton)findViewById(R.id.btnShare)).setOnClickListener(new ShareButtonClickListener());
+        ((ImageButton)findViewById(R.id.btnLeft)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = pics.indexOf(pic);
+                if (index == 0) {
+                    return;
+                }
+                pic = pics.get(index - 1);
+                ((TextView)findViewById(R.id.txtPicName)).setText(pic.name);
+                showImage();
+            }
+        });
+        ((ImageButton)findViewById(R.id.btnRight)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = pics.indexOf(pic);
+                if (index >= pics.size() - 1) {
+                    return;
+                }
+                pic = pics.get(index + 1);
+                ((TextView)findViewById(R.id.txtPicName)).setText(pic.name);
+                showImage();
+            }
+        });
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        final ImageView imgPic = (ImageView) findViewById(R.id.imgPic);
+        showImage();
+    }
+
+    private void showImage() {
+        final ImageSwitcher imageSwitcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
         final FrameLayout layout = (FrameLayout) findViewById(R.id.layoutPicMain);
-        new BitmapWorkerTask(imgPic, pic, layout.getWidth(), layout.getHeight()).execute();
+        new BitmapWorkerTask(imageSwitcher, pic, layout.getWidth(), layout.getHeight()).execute();
+    }
+
+    @Override
+    public View makeView() {
+        final ImageView v = new ImageView(getApplicationContext());
+        v.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        return v;
     }
 
     @Override
@@ -82,6 +126,24 @@ public class PictureActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable("pic", pic);
+        outState.putParcelableArrayList("pics", pics);
+        outState.putParcelable("tempImageUri", tempImageUri);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        pic = savedInstanceState.getParcelable("pic");
+        pics = savedInstanceState.getParcelableArrayList("pics");
+        tempImageUri = savedInstanceState.getParcelable("tempImageUri");
+    }
+
     /**
      * シェアボタンイベント
      */
@@ -97,8 +159,9 @@ public class PictureActivity extends Activity {
             OutputStream os = null;
             try {
                 os = getContentResolver().openOutputStream(tempImageUri);
-                final ImageView imageView = (ImageView) findViewById(R.id.imgPic);
-                Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                final ImageSwitcher imageSwitcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
+                final ImageView imageView = (ImageView) imageSwitcher.getCurrentView();
+                final Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
             } catch (IOException e){
                 Misc.error("Failed to save temporary image.");
@@ -130,12 +193,12 @@ public class PictureActivity extends Activity {
      */
     private class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
         private final ContentsService contentsService = new ContentsService();
-        private final ImageView imageView;
+        private final ImageSwitcher imageView;
         private final MainDto pic;
         private final long width;
         private final long height;
 
-        private BitmapWorkerTask(ImageView imageView, MainDto pic, long width, long height) {
+        private BitmapWorkerTask(ImageSwitcher imageView, MainDto pic, long width, long height) {
             this.imageView = imageView;
             this.pic = pic;
             this.width = width;
@@ -169,8 +232,8 @@ public class PictureActivity extends Activity {
             }
 
             Misc.debug("Set Bitmap of " + pic.id);
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            imageView.setImageBitmap(bitmap);
+            //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageView.setImageDrawable(new BitmapDrawable(getResources(),bitmap));
         }
     }
 }

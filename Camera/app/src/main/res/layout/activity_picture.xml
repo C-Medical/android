@@ -17,33 +17,72 @@
         android:id="@+id/layoutPicMain"
         android:layout_above="@+id/layoutPicBottom">
 
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/imgPic"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_pic"
-            android:scaleType="center"/>
-    </FrameLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|bottom"
-        android:gravity="center_horizontal"
-        android:layout_alignParentRight="false"
-        android:layout_alignParentEnd="false"
-        android:id="@+id/layoutPicBottom"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentBottom="true">
-
-        <ImageButton
+        <ImageSwitcher
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btnShare"
-            android:src="@drawable/ic_share"
-            android:background="@drawable/selector_button"/>
-    </LinearLayout>
+            android:id="@+id/imageSwitcher"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layoutPicBottom"
+        android:focusable="false"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/txtPicName"
+            android:layout_gravity="center_vertical"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentBottom="false"
+            android:layout_centerVertical="true"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnShare"
+                android:src="@drawable/ic_share"
+                android:background="@drawable/selector_button"
+                android:layout_alignParentTop="false"
+                android:layout_toStartOf="@+id/btnLeft"
+                android:layout_toLeftOf="@+id/btnLeft"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnLeft"
+                android:src="@drawable/ic_left"
+                android:background="@drawable/selector_button"
+                android:layout_alignParentTop="false"
+                android:layout_toLeftOf="@+id/btnRight"
+                android:layout_toStartOf="@+id/btnRight"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnRight"
+                android:src="@drawable/ic_right"
+                android:background="@drawable/selector_button"
+                android:layout_toStartOf="@+id/btnShare"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
+
+        </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
