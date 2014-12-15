@@ -17,10 +17,10 @@
         android:id="@+id/layoutPicMain"
         android:layout_above="@+id/layoutPicBottom">
 
-        <ImageSwitcher
+        <ViewFlipper
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageSwitcher"
+            android:id="@+id/viewFlipper"
             android:layout_gravity="center"/>
     </FrameLayout>
 
@@ -60,27 +60,6 @@
                 android:layout_alignParentTop="false"
                 android:layout_toStartOf="@+id/btnLeft"
                 android:layout_toLeftOf="@+id/btnLeft"/>
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnLeft"
-                android:src="@drawable/ic_left"
-                android:background="@drawable/selector_button"
-                android:layout_alignParentTop="false"
-                android:layout_toLeftOf="@+id/btnRight"
-                android:layout_toStartOf="@+id/btnRight"/>
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnRight"
-                android:src="@drawable/ic_right"
-                android:background="@drawable/selector_button"
-                android:layout_toStartOf="@+id/btnShare"
-                android:layout_alignParentTop="false"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"/>
 
         </LinearLayout>
     </RelativeLayout>
