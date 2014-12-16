@@ -102,8 +102,11 @@ public class DirSelectActivity extends Activity {
         public void onClick(View v) {
             final Intent intent = getIntent();
             final ArrayList<MainDto> dtos = intent.getParcelableArrayListExtra("dtos");
-            contentsService.changeParent(getApplicationContext(), dtos, getCurrentDirId());
-            Toast.makeText(getApplicationContext(), getResources().getText(R.string.data_moved), Toast.LENGTH_LONG).show();
+            if (contentsService.changeParent(getApplicationContext(), dtos, getCurrentDirId())) {
+                Toast.makeText(getApplicationContext(), getResources().getText(R.string.data_moved), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), getResources().getText(R.string.data_not_moved), Toast.LENGTH_LONG).show();
+            }
             setResult(Activity.RESULT_OK);
             finish();
         }

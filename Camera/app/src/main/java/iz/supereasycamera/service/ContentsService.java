@@ -223,15 +223,16 @@ public final class ContentsService {
      *
      * @param dtos
      * @param parentId
+     * @return true if success
      */
-    public void changeParent(Context context, List<MainDto> dtos, long parentId) {
+    public boolean changeParent(Context context, List<MainDto> dtos, long parentId) {
         DaoHelper.beginTransaction(context);
         for (MainDto dto : dtos) {
             switch (dto.dirOrPic) {
                 case DIR:
-                    if (dto.id == parentId) {
+                    if (isDescendant(context, parentId,  dto.id)) {
                         Misc.warn("Cannot move directory into itself. id = " + dto.id);
-                        continue;
+                        return false;
                     }
                     dirDao.updateParentId(context, dto.id, parentId);
                     break;
@@ -242,5 +243,27 @@ public final class ContentsService {
             }
         }
         DaoHelper.commitTransaction(context);
+        return true;
+    }
+
+    /**
+     * @param context
+     * @param targetId
+     * @param selfId
+     * @return true if target is descendant of self
+     */
+    public boolean isDescendant(Context context, long targetId, long selfId) {
+        long wkId = targetId;
+        while (wkId > 0) {
+            if (wkId == selfId) {
+                return true;
+            }
+
+            final MainDto target = dirDao.selectBy(context, wkId);
+            final MainDto nextParent = dirDao.selectBy(context, target.parentId);
+            wkId = nextParent != null ? nextParent.id : 0;
+        }
+
+        return false;
     }
 }
