@@ -41,6 +41,6 @@ public final class Misc {
 
     public static String toMB(int byteSize) {
         final BigDecimal kb = new BigDecimal(byteSize).divide(new BigDecimal(1000 * 1000), 3, BigDecimal.ROUND_HALF_UP);
-        return kb.toString() + "KB";
+        return kb.toString() + "MB";
     }
 }
