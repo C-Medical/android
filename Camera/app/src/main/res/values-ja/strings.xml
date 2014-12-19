@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">超簡単カメラ</string>
+    <string name="app_name">簡単仕分けカメラ</string>
     <string name="action_settings">設定</string>
     <string name="add_new_dir">新しいフォルダ</string>
     <string name="cancel">キャンセル</string>
@@ -27,5 +27,5 @@
     <string name="move_here"><u>ここに移動する</u></string>
     <string name="data_moved">データを移動しました。</string>
     <string name="share_picture">写真を共有</string>
-    <string name="data_not_moved">フォルダを自信もしくは子フォルダには移動できません。</string>
+    <string name="data_not_moved">フォルダを自身もしくは自身の子フォルダには移動できません。</string>
 </resources>
