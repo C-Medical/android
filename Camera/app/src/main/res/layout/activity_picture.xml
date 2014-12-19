@@ -57,9 +57,7 @@
                 android:id="@+id/btnShare"
                 android:src="@drawable/ic_share"
                 android:background="@drawable/selector_button"
-                android:layout_alignParentTop="false"
-                android:layout_toStartOf="@+id/btnLeft"
-                android:layout_toLeftOf="@+id/btnLeft"/>
+                android:layout_alignParentTop="false"/>
 
         </LinearLayout>
     </RelativeLayout>

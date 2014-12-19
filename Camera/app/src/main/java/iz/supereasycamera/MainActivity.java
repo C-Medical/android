@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,7 +49,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         // Buttonクリックイベントを設定
-        ImageButton btnPrev = (ImageButton) findViewById(R.id.btnLeft);
+        ImageButton btnPrev = (ImageButton) findViewById(R.id.btnPrev);
         btnPrev.setOnClickListener(new PrevButtonClickListener());
         ImageButton btnAdd = (ImageButton) findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(new AddButtonClickListener());
@@ -163,10 +164,23 @@ public class MainActivity extends Activity {
         }
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            // ROOTでない場合は、上のフォルダへ移動する
+            if (currentDir != null) {
+                ((ImageButton) findViewById(R.id.btnPrev)).callOnClick();
+                return false;
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
     /**
      * 戻るボタンイベント
      */
-    private class PrevButtonClickListener implements  View.OnClickListener {
+    private class PrevButtonClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             if (MainActivity.this.currentDir == null) {
