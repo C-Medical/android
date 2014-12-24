@@ -1,0 +1,210 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    android:padding="0dp"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="jp.sakuramochi702.colorrecognize.MainActivity" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/tvHelpTitle1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#1ab898"
+            android:gravity="center"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp"
+            android:text="HOW TO PLAY"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ffffff" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tvHelpStr1_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2.If there&apos;s the icon which matches both SHAPE and COLOR, select it.(Hard Mode Only)"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/tvHelpStr1_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="Ex. In below case, correct answer is &quot;red circle&quot;"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/tvHelpStr1_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/layoutQ"
+                android:layout_marginTop="17dp"
+                android:layout_toLeftOf="@+id/layoutQ"
+                android:text="red circle→" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="18dp"
+                android:background="@drawable/layout_answer"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/LinearLayout02"
+                    android:layout_width="fill_parent"
+                    android:layout_height="54dp" >
+
+                    <ImageView
+                        android:id="@+id/imgA1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="20"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/circle_red" />
+
+                    <ImageView
+                        android:id="@+id/imgA2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="20"
+                        android:src="@drawable/heart_purple" />
+
+                    <ImageView
+                        android:id="@+id/imgA3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="20"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/star_blue" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/LinearLayout01"
+                    android:layout_width="fill_parent"
+                    android:layout_height="54dp" >
+
+                    <ImageView
+                        android:id="@+id/imgA4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="70dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="20"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/moon_yellow" />
+
+                    <ImageView
+                        android:id="@+id/imgA5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="70dp"
+                        android:layout_weight="20"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/flower_green" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvHelpStr1_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/linearLayout2"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="35dp"
+                android:text="↓red circle" />
+
+            <RelativeLayout
+                android:id="@+id/layoutQ"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_above="@+id/tvHelpStr1_5"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/layout_question"
+                android:gravity="center_vertical" >
+
+                <ImageView
+                    android:id="@+id/imgQ1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/circle_red" />
+
+                <ImageView
+                    android:id="@+id/imgQ2"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/moon_blue" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/tvHelpPage1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp"
+            android:text="2 / 2"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <Button
+            android:id="@+id/btnHelpPageNext"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="#ffffff"
+            android:onClick="onClickNext"
+            android:text="＞" />
+
+    </LinearLayout>
+
+</LinearLayout>
