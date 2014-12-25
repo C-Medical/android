@@ -44,7 +44,7 @@
             android:id="@+id/tvHelpStr1_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1.このゲームは、お題の図形に対して、正解となる図形をなるべく早く見つけることを目的としたゲームです。正解数と回答の早さで得点が決まります。"
+            android:text="5.全10問の合計点で、ハイスコアを目指しましょう。"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <RelativeLayout
@@ -53,66 +53,64 @@
             android:layout_weight="1" >
 
             <ImageView
+                android:id="@+id/imgA2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="40dp"
+                android:layout_marginRight="44dp"
+                android:layout_weight="20"
+                android:src="@drawable/heart_red" />
+
+            <ImageView
                 android:id="@+id/imgA1"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="44dp"
-                android:layout_marginTop="38dp"
+                android:layout_alignLeft="@+id/imgA2"
+                android:layout_below="@+id/imgA5"
                 android:layout_weight="20"
                 android:scaleType="fitCenter"
-                android:src="@drawable/circle_green" />
+                android:src="@drawable/flower_green" />
 
             <ImageView
                 android:id="@+id/imgA3"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignTop="@+id/imgA1"
-                android:layout_marginLeft="35dp"
-                android:layout_marginTop="16dp"
-                android:layout_toRightOf="@+id/imgA2"
+                android:layout_above="@+id/imgA2"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="32dp"
                 android:layout_weight="20"
                 android:scaleType="fitCenter"
-                android:src="@drawable/star_blue" />
+                android:src="@drawable/star_yellow" />
 
             <ImageView
                 android:id="@+id/imgA4"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignLeft="@+id/imgA1"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="24dp"
+                android:layout_above="@+id/imgA3"
+                android:layout_centerHorizontal="true"
                 android:layout_weight="20"
                 android:scaleType="fitCenter"
-                android:src="@drawable/moon_yellow" />
-
-            <ImageView
-                android:id="@+id/imgA2"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_weight="20"
-                android:src="@drawable/heart_purple" />
+                android:src="@drawable/moon_purple" />
 
             <ImageView
                 android:id="@+id/imgA5"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_alignRight="@+id/imgA3"
-                android:layout_below="@+id/imgA2"
-                android:layout_marginRight="15dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="23dp"
+                android:layout_toRightOf="@+id/imgA3"
                 android:layout_weight="20"
                 android:scaleType="fitCenter"
-                android:src="@drawable/flower_red" />
+                android:src="@drawable/circle_blue" />
 
         </RelativeLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="50dp" >
 
         <TextView
@@ -124,7 +122,7 @@
             android:gravity="center"
             android:paddingBottom="7dp"
             android:paddingTop="7dp"
-            android:text="1 / 5"
+            android:text="5 / 5"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Button

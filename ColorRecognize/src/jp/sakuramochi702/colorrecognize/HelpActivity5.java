@@ -7,16 +7,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-public class HelpActivity2 extends ActionBarActivity {
+public class HelpActivity5 extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE); //タイトルバーを消す
-		setContentView(R.layout.activity_help2);	
+		setContentView(R.layout.activity_help5);	
 	}
 	
 	@Override
@@ -39,7 +37,12 @@ public class HelpActivity2 extends ActionBarActivity {
 	}
 	
 	public void onClickNext(View v) {
-		Intent i = new Intent(this, jp.sakuramochi702.colorrecognize.HelpActivity3.class);
-		startActivity(i);
+		Intent intent = new Intent(this, MainActivity.class);
+		//遷移先のActivityより上のActivityを消す
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		//遷移するとActivityを作り直す
+		//intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		startActivity(intent);
 	}
+	
 }
