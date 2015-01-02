@@ -29,5 +29,6 @@
     <string name="data_moved">Data has been moved.</string>
     <string name="share_picture">Share picture</string>
     <string name="data_not_moved">Could not move into descendant or itself.</string>
+    <string name="not_supported">Unfortunately, this application does not support your device.</string>
 
 </resources>

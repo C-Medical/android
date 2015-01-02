@@ -28,4 +28,5 @@
     <string name="data_moved">データを移動しました。</string>
     <string name="share_picture">写真を共有</string>
     <string name="data_not_moved">フォルダを自身もしくは自身の子フォルダには移動できません。</string>
+    <string name="not_supported">残念ながら、このデバイスはサポート外です。</string>
 </resources>

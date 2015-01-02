@@ -150,6 +150,12 @@ public class MainActivity extends Activity {
                     picture = PictureUtils.readOutFrom(getApplicationContext(), data.getData());
                     getContentResolver().delete(data.getData(), null, null);
                 }
+
+                if (picture == null || picture.length == 0) {
+                    Toast.makeText(getApplicationContext(), R.string.not_supported, Toast.LENGTH_LONG);
+                    return;
+                }
+
                 // DB保存して、一覧に反映
                 final MainDto dto = contentsService.addNewPic(getApplicationContext(), getCurrentDirId(), orientation, picture);
                 listAdapter.add(dto);
